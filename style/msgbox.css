@@ -1,0 +1,100 @@
+:root {
+    --msg-text-color: inherit;
+    --msg-shadow-color: rgb(0, 0, 0, 0.5);
+    --msg-gradient-color-from: #000A6D;
+    --msg-gradient-color-to: whitesmoke;
+    --msg-background-color: whitesmoke;
+    --msg-button-color: buttonface;
+    --msg-border-radius: 8px;
+    --topmost-z: 2147483647;
+}
+
+#msg-BoxOverlay {
+    z-index: var(--topmost-z) !important;
+}
+
+#msgCaption{
+    margin: 0 !important;
+    /* top, right, bottom, and left in that order */
+    padding: 0.5rem 0 0.5rem 1.5rem !important;
+    color: var(--msg-text-color) !important;
+}
+
+.msg-Prompt {
+    display: block;
+    margin-block-start: 1rem !important;
+    margin-block-end: 1rem !important;
+    color: var(--msg-text-color) !important;
+}
+
+.msg-overlay {
+    background-color: transparent;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.msg-modal {
+    background-color: var(--msg-shadow-color);
+}
+
+.msg-dialog {
+    display: inline-block;
+    max-width: 40vw;
+    height: auto;
+    word-wrap: break-word;
+    background-color: var(--msg-background-color) !important;
+    border-radius: var(--msg-border-radius);
+    box-shadow: 8px 8px 16px var(--msg-shadow-color);
+    border: 1px solid lavender;
+    padding: 0 1.5rem 1.5rem;
+}
+
+.msg-titlebar {
+    position: relative;
+    top: -1px;
+    left: -1.55rem;
+    width: calc(100% + 3rem);
+    border-radius: var(--msg-border-radius) var(--msg-border-radius) 0 0;
+}
+
+.msg-gradient {
+    /* background: linear-gradient(to left,whitesmoke 0, #000A6D 100%); */
+    background: linear-gradient(to right, var(--msg-gradient-color-from) 0, var(--msg-gradient-color-to) 100%);
+}
+
+.msg-button {
+    margin-top: 1rem !important;
+    margin-right: 1rem !important;
+    padding: 0.5rem !important; /* oben | rechts | unten | links */
+    min-width: 6rem !important; 
+    cursor: pointer;
+    border: 1px solid lavender !important;
+    border-radius: var(--msg-border-radius) !important;
+    background-color: var(--msg-button-color);
+    color: var(--msg-text-color);
+}
+.msg-button:hover {
+    border: 1px solid lavender;
+    box-shadow: 0px 2px 15px 5px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1280px) {
+    .msg-dialog {
+        max-width: 90vw;
+    }
+}
+
+@media(max-width: 600) {
+    .msg-dialog {
+        max-width: 95vw;
+    }
+}
+
+@media(max-width: 300) {
+    .msg-dialog {
+        max-width: 98vw;
+    }
+}
