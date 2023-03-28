@@ -229,7 +229,7 @@ class Timer extends Library {
             return;
         }
         if (this.validateTime(hours, minutes, seconds) == false) 
-            return new Error('Could not set alert due to invalid parameter(s)');
+            return new Error('Could not set time due to invalid parameter(s)');
         
         this.#start_sec = seconds;
         this.#start_min = minutes;
