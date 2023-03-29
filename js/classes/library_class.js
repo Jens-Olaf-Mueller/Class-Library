@@ -75,7 +75,6 @@ class Library {
      * @param {HTMLElement[]} elements Single HTML-element or array of elements to be styled.
      * @param {string} style CSS-conform style property
      */
-    //  #cssUpdate(tabElements, style) {
     cssAddStyle(style, ...elements) {
         elements.forEach(element => {
             element.style.cssText += style;
