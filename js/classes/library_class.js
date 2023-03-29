@@ -72,13 +72,17 @@ class Library {
     
     /**
      * Adds a new style property to the passed elements
-     * @param {HTMLElement[]} elements Single HTML-element or array of elements to be styled.
+     * @param {HTMLElement | HTMLElement[]} elements Array of HTML elements or single HTML element to be styled.
      * @param {string} style CSS-conform style property
      */
-    cssAddStyle(style, ...elements) {
-        elements.forEach(element => {
-            element.style.cssText += style;
-        });
+    cssAddStyle(elements, style) {
+        if (elements instanceof Array) {
+            elements.forEach(element => {
+                element.style.cssText += style;
+            });
+        } else {
+            elements.style.cssText += style;
+        }
     }
 }
 

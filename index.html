@@ -14,17 +14,21 @@
 
 <body>
     <main>
+        <aside class="buttons">
+            <button id="btnShowContainer">Show Clock</button>
+            <button id="btnStartTimer" disabled>Start Timer-Demo...</button>            
+        </aside>
 
-
-        <button id="btnStartTimer">Start Timer-Demo...</button>
-        <div class="clock-frame">
+        
+        <div id="divClockFrame" class="clock-frame">
             <div id="divClock"></div>
             <p id="pInfo">0:00</p>
+            <!-- <div id="divContainerDemo">Container Demo</div> -->
         </div>        
 
         <aside class="settings">
             <div data-control="checkbox" id="ctlTimeout">
-                <input type="checkbox" id="chkTimeout" disabled>
+                <input type="checkbox" id="chkTimeout" disabled checked>
                 <label for="chkTimeout" disabled>Message, wenn Countdown abgelaufen ist</label>
             </div>
             <div data-control="checkbox" id="ctlAlert">
@@ -32,6 +36,7 @@
                 <label for="chkAlert" disabled>Message, wenn Alarmzeit erreicht ist</label>
             </div>
         </aside>
+        
     </main>
 
 </body>

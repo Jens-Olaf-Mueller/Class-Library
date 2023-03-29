@@ -67,6 +67,7 @@ class Timer extends Library {
             this.#sound.muted = !this.soundEnabled;
         }
     }
+    get sound() { return this.#sound; }
 
 
     /**
@@ -299,8 +300,10 @@ class Timer extends Library {
             this.#countDownID = setInterval(() => {
                 this.#secRemaining--;
                 if (!this.timerIsRunning && this.displayElement) this.displayElement.innerText = this.countDownRemaining;
-                if (this.hasSound && this.soundEnabled && this.#secRemaining > 0 && 
+                if (this.hasSound) {
+                    if (this.soundEnabled && this.#secRemaining > 0 && 
                     this.#secRemaining <= this.soundPlayTime && !this.sound.ended) this.sound.play();
+                } 
                 if (this.#secRemaining <= 0) {                     
                     this.#stopCountDown();
                     document.dispatchEvent(new Event(EVT_TIMEOUT)); // raise timeout event
