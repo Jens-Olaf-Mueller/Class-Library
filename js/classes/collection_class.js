@@ -10,7 +10,7 @@
  * Each item of the collection is accessable over it's numerical index or over an
  * assigned unique string key. You can filter and access the whole list by the different types,
  * and add new items or change and remove existing items.
- * Besides the common data types, you can determine wether a stored item is an array or not. 
+ * Besides the common data types, you can determine whether a stored item is an array or not. 
  */
 
 /**
@@ -63,7 +63,7 @@ class Collection {
      * Each item of the collection is accessable over it's numerical index or over an
      * assigned unique string key. You can filter and access the whole list by the different data types,
      * and add new items or change and remove existing items.
-     * Besides the common data types, you can determine wether a stored item is an array or not
+     * Besides the common data types, you can determine whether a stored item is an array or not
      * or if an item is an HTML-element. 
      * 
      * An optional passed list of items will be immediately added.

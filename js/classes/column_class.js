@@ -59,7 +59,8 @@ class Column {
 
 
     /**
-     * Creates a new table column.
+     * Creates a new table column.<br>
+     * This class is a helper class for the Table-class.
      * @param {number} index The column index.
      * @param {class} parentTable The parent table class, the column belongs to.
      * @param  {...any} cells A single cell or an array of cells.

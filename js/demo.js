@@ -1,24 +1,27 @@
 import MessageBox from './classes/messagebox_class.js';
 import Timer from './classes/timer_class.js';
-import Container from './classes/container.class.js';
+import Container from './classes/container_class.js';
+import IntervalCollection from './classes/intervals_class.js';
+import Calculator from './classes/calculator_class.js';
 
 const msgBox = new MessageBox('../msgbox.css'),
       tmrDemo = new Timer(12,0,0,'divClock'),
-      divClock = new Container('divClockFrame');
+      divClock = new Container('divClockFrame'),
+      collIntervals = new IntervalCollection('Test');
       
 
 const chkAlert = document.getElementById('chkAlert'),
+      chkShowClock = document.getElementById('chkShowClock'),
       chkTimeout = document.getElementById('chkTimeout'),
       pInfo = document.getElementById('pInfo'),
       btnShowClock = document.getElementById('btnShowContainer'),
       btnRunTimer = document.getElementById('btnStartTimer');
 
-let clockVisible = false;
-
 runApp();
 
 function runApp() {
-    btnShowClock.addEventListener('click', toggleClock);
+    // btnShowClock.addEventListener('click', toggleClock);
+    chkShowClock.addEventListener('change', toggleClock);
     btnRunTimer.addEventListener('click', startDemo);    
     document.addEventListener('timerexpired', timeOutAlert);   
     document.addEventListener('timeout', countDownAlert); 
@@ -28,17 +31,19 @@ function runApp() {
     divClock.hide();
     divClock.addEventListener('click', clockClicked);
     console.log(divClock.events)
+    // collIntervals.add(intervalDemo, 5000, 'intervalDemo');
+    // collIntervals.add(intervalDemo, 5000, tmrDemo);
+    // collIntervals.list();
+    let calc = new Calculator('./style/calculator.css');
 }
 
 function toggleClock() {
-    clockVisible = !clockVisible;
-    if (clockVisible) {
-        divClock.show();
-        btnShowClock.innerText = 'Hide Clock';
+    if (this.checked) {
+        // divClock.show();
+        divClock.visible = true;
         btnRunTimer.removeAttribute('disabled');
     } else {
         divClock.hide();
-        btnShowClock.innerText = 'Show Clock';
         btnRunTimer.setAttribute('disabled','');
     }
 }
@@ -72,18 +77,30 @@ async function startDemo() {
 }
 
 async function countDownAlert() {
-    if (chkTimeout.checked) {        
-        await msgBox.show('Countdown abgelaufen!','DEMO: Timer-countdown','Ok', false);
+    if (chkTimeout.checked) {  
+        msgBox.gradientColorFrom = 'limegreen';
+        await msgBox.show('Countdown abgelaufen!','DEMO: Timer-countdown','Ok', false, true);
     }   
 }
 
 async function timeOutAlert() {
     if (chkAlert.checked) {
+        msgBox.gradientColorFrom = 'firebrick';   
         await msgBox.show('Zeit abgelaufen!','A L A R M !!!','Ok', false);
     }   
 }
 
 async function clockClicked() {
     await msgBox.show('Na, auf die Uhr geklickt?','C L I C K !','Ok', false);
-    divClock.removeEventListener('clockClicked');
+}
+
+async function intervalDemo() {
+    let answer = await msgBox.show('Der Interval nervt Dich alle 5 Sekunden...<br>Interval stoppen?','Demo Interval','Ja, Nein', false);
+    debugger
+    if (answer == 'Ja') {
+
+        collIntervals.stop('intervalDemo');
+        collIntervals.list();
+    } 
+    
 }

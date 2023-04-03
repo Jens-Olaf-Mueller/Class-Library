@@ -14,14 +14,12 @@ main {
     padding: 2rem;
 }
 
-aside.settings, aside.buttons {
+aside.settings, aside.buttons, form.form-settings fieldset {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     padding: 2rem;
 }
-
- 
 
 aside button {
     width: 8rem;
@@ -34,7 +32,6 @@ aside button {
     cursor: pointer;
 }
 
-
 aside button:hover {
     filter: brightness(1.25);
 }
@@ -42,6 +39,12 @@ aside button:hover {
 aside button:disabled, aside button:disabled:hover {
     background-color: #ccc;
     filter: brightness(1);
+}
+
+form.form-settings {
+    padding: 1rem;
+    background-color: aliceblue;
+    border: 3px double silver;
 }
 
 .clock-frame {

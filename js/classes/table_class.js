@@ -30,7 +30,7 @@ class Table {
      */
     splitter = ',';
     /**
-     * Determines wether the table's column captions are displayed or not.
+     * Determines whether the table's column captions are displayed or not.
      */
     showColumnHeaders = true;
     /**
@@ -38,7 +38,7 @@ class Table {
      */
     logTable = true;
      /**
-     * Determines wether the table displays the row numbers or not.
+     * Determines whether the table displays the row numbers or not.
      */   
     showRowIndex = false;
 

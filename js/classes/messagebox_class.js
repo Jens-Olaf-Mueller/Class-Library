@@ -102,8 +102,8 @@ class MessageBox extends Library{
      * @param {string} title [Optional] The Caption of the message box. If omitted, the page title is used.
      * @param {string | string[]} buttons [Optional] String, separeted by comma or string array.
      * If omitted, a single "OK" button is displayed.
-     * @param {boolean} modal [Optional] Tells wether the messagebox is displayed modal (default) or not
-     * @param {boolean} gradient [Optional] Tells wether the title bar has got a color gradient (default) or not.
+     * @param {boolean} modal [Optional] Tells whether the messagebox is displayed modal (default) or not
+     * @param {boolean} gradient [Optional] Tells whether the title bar has got a color gradient (default) or not.
      * @returns A promise. The promise is solved to the clicked button text, which serves as the answer.
      */
     async show(prompt, title, buttons, modal, gradient) {

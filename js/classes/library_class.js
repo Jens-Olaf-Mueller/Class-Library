@@ -2,6 +2,12 @@ const ERR_TYPEMISMATCH = 'Wrong parameter type.'
 
 class Library {
     #cssSheet = null;
+    #parentElement = null;
+
+    /**
+     * Assigns a stylesheet from the passed path or returns it.
+     * If no path is submitted, the value is null!
+     */
     get stylesheet() { return this.#cssSheet; }
     set stylesheet(href) {
         if (href == null) return;        
@@ -15,11 +21,44 @@ class Library {
         this.setAttributes(link, {
             rel: 'stylesheet',
             type: 'text/css',
-            href: href,
-            title: 'table_' + this.table.id
+            href: href
         });
         document.head.appendChild(link);
     }
+
+
+    /**
+     * Assigns a parent element or returns it.
+     * The new parameter may be a string, representing the id of the HTML-element,
+     * or the element itself.
+     */
+    get parent() { return this.#parentElement; }
+    set parent(newElement) {
+        const element = this.getElement(newElement);
+        if (element instanceof HTMLElement) this.#parentElement = element;
+    }
+
+    /**
+     * The property returns the current time.
+     */
+    get now() { return new Date().getTime(); }
+
+    // /**
+    //  * Sets or returns the visibility of the container.<br>
+    //  * The property has the same effect like the show() method (true) 
+    //  * or like the hide() method (false).
+    //  */
+    // get visible() { return this.#visible; }
+    // set visible(value) {
+    //     if (typeof value == 'boolean') {
+    //         this.#visible = value;
+    //         if (value) {
+    //             this.show();
+    //         } else {
+    //             this.hide();
+    //         }
+    //     }
+    // }
 
 
     /**
@@ -32,6 +71,17 @@ class Library {
      */
     constructor(styleSheet) {
         this.stylesheet = styleSheet;
+    }
+
+    isClass(object) {
+        if (object === undefined) return false;
+        // const isConstructorClass = object.constructor && object.constructor.toString().substring(0, 5) === 'class';
+        const isConstructorClass = object.constructor && object.constructor.toString().startsWith('class');
+        if (object.prototype === undefined) return isConstructorClass;
+        
+        const objPC = object.prototype.constructor,
+              isProtoClass = objPC && objPC.toString && objPC.toString().startsWith('class');
+        return isConstructorClass || isProtoClass;
     }
 
     /**

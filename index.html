@@ -10,33 +10,44 @@
     <link rel="stylesheet" href="./style/msgbox.css">
 
     <script defer type="module" src="./js/demo.js"></script>
+    <!-- <script defer src="./js/classes/intervals_class.js"></script> -->
 </head>
 
 <body>
     <main>
         <aside class="buttons">
-            <button id="btnShowContainer">Show Clock</button>
+            <div id="divClockFrame" class="clock-frame">
+                <div id="divClock"></div>
+                <p id="pInfo">0:00</p>
+            </div>             
             <button id="btnStartTimer" disabled>Start Timer-Demo...</button>            
         </aside>
 
         
-        <div id="divClockFrame" class="clock-frame">
-            <div id="divClock"></div>
-            <p id="pInfo">0:00</p>
-            <!-- <div id="divContainerDemo">Container Demo</div> -->
-        </div>        
+       
 
         <aside class="settings">
-            <div data-control="checkbox" id="ctlTimeout">
-                <input type="checkbox" id="chkTimeout" disabled checked>
-                <label for="chkTimeout" disabled>Message, wenn Countdown abgelaufen ist</label>
-            </div>
-            <div data-control="checkbox" id="ctlAlert">
-                <input type="checkbox" id="chkAlert" disabled>
-                <label for="chkAlert" disabled>Message, wenn Alarmzeit erreicht ist</label>
-            </div>
-        </aside>
-        
+            <h1>Settings</h1>
+            <form id="frmSettings" class="form-settings">
+                <fieldset><legend>Timer Demo</legend>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkShowClock">
+                        <label for="chkShowClock">Show clock</label>
+                    </div>
+
+                    <div data-control="checkbox" id="ctlTimeout">
+                        <input type="checkbox" id="chkTimeout" checked>
+                        <label for="chkTimeout">Message, wenn Countdown abgelaufen ist</label>
+                    </div>
+                    <div data-control="checkbox" id="ctlAlert">
+                        <input type="checkbox" id="chkAlert" checked>
+                        <label for="chkAlert">Message, wenn Alarmzeit erreicht ist</label>
+                    </div>                 
+                </fieldset>
+               
+
+            </form>
+        </aside>        
     </main>
 
 </body>

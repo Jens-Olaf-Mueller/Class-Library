@@ -31,7 +31,7 @@ class Timer extends Library {
 
 
     /**
-     * Tells us, wether the timer is running or not.
+     * Tells us, whether the timer is running or not.
      * @readonly
      */
     get timerIsRunning() { return this.#timerID !== undefined; }
@@ -146,7 +146,7 @@ class Timer extends Library {
      * @param {number} minutes [Optional]
      * @param {number} seconds [Optional]
      * @param {HTMLElement | string} display HTML element or it's id to display the time.
-     * @param {boolean} run Determines wether the new timer starts immediately or not (default).
+     * @param {boolean} run Determines whether the new timer starts immediately or not (default).
      */
     constructor(hours = 0, minutes = 0, seconds = 0, display, run = false) {
         super();
