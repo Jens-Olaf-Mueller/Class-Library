@@ -3,6 +3,7 @@ const ERR_TYPEMISMATCH = 'Wrong parameter type.'
 class Library {
     #cssSheet = null;
     #parentElement = null;
+    #visible = true;
 
     /**
      * Assigns a stylesheet from the passed path or returns it.
@@ -13,8 +14,9 @@ class Library {
         if (href == null) return;        
         const filename = href.replace(/^.*[\\\/]/, ''); // avoid duplicates!
         for (let i = 0; i < document.styleSheets.length; i++) {
-            // console.log('Sheet '+ i+1, document.styleSheets[i].href)
-            if (document.styleSheets[i].href.includes(filename)) return;
+            // console.log('Sheet '+ Number(i+1), document.styleSheets[i])
+            const href = document.styleSheets[i].href;
+            if (href && href.includes(filename)) return;
         }
         this.#cssSheet = href;
         const link  = document.createElement('link');
@@ -43,22 +45,31 @@ class Library {
      */
     get now() { return new Date().getTime(); }
 
-    // /**
-    //  * Sets or returns the visibility of the container.<br>
-    //  * The property has the same effect like the show() method (true) 
-    //  * or like the hide() method (false).
-    //  */
-    // get visible() { return this.#visible; }
-    // set visible(value) {
-    //     if (typeof value == 'boolean') {
-    //         this.#visible = value;
-    //         if (value) {
-    //             this.show();
-    //         } else {
-    //             this.hide();
-    //         }
-    //     }
-    // }
+    /**
+     * Sets or returns the visibility of the child class.<br>
+     * Child classes must have a .show() and .hide() method!
+     * The property has the same effect like the show() method (true) 
+     * or like the hide() method (false).
+     */
+    get visible() { return this.#visible; }
+    set visible(value) {
+        if (typeof value == 'boolean') {
+            this.#visible = value;
+            if (value) {
+                try {
+                    this.show();
+                } catch (error) {
+                    throw 'Missing show() method.'
+                }                
+            } else {
+                try {
+                    this.hide();
+                } catch (error) {
+                    throw 'Missing hide() method.'
+                }                
+            }
+        }
+    }
 
 
     /**

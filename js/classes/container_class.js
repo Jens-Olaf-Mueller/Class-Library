@@ -31,22 +31,22 @@ class Container extends Library {
         }
     }
 
-    /**
-     * Sets or returns the visibility of the container.<br>
-     * The property has the same effect like the show() method (true) 
-     * or like the hide() method (false).
-     */
-    get visible() { return this.#visible; }
-    set visible(value) {
-        if (typeof value == 'boolean') {
-            this.#visible = value;
-            if (value) {
-                this.show();
-            } else {
-                this.hide();
-            }
-        }
-    }
+    // /**
+    //  * Sets or returns the visibility of the container.<br>
+    //  * The property has the same effect like the show() method (true) 
+    //  * or like the hide() method (false).
+    //  */
+    // get visible() { return this.#visible; }
+    // set visible(value) {
+    //     if (typeof value == 'boolean') {
+    //         this.#visible = value;
+    //         if (value) {
+    //             this.show();
+    //         } else {
+    //             this.hide();
+    //         }
+    //     }
+    // }
 
     /**
      * Returns all registered events.

@@ -3,6 +3,8 @@
     --mem-button-bg-color: #555555;
     --op-button-bg-color: #5e534d; 
     --display-bg-color: #2d2828; /* #2a2a2a; */
+    --equals-bg-color: chocolate;
+    --output-color: whitesmoke;
     --grid-border-width: 8px;
 }
 
@@ -14,7 +16,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Verdana, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.calculator-parent {
+.calculator-pod {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +28,6 @@
     display: grid;
     justify-content: center;
     align-content: center;
-    /* min-height: calc(100% - var(--navbar-height) - 0.3rem); */
     width: calc(5 * var(--button-size) + 2 * var(--grid-border-width) - 1px);
     grid-template-rows: minmax(80px, auto) repeat(7, var(--button-size));
     grid-template-columns: repeat(5, var(--button-size));
@@ -71,7 +72,7 @@
 }
 
 .calculator-grid button.btn-equals {
-    background-color: chocolate;
+    background-color: var(--equals-bg-color);
 }
 
 /* double-keys */
@@ -96,7 +97,7 @@
 }
 
 .output .curr-operand-txt {
-    color: whitesmoke;
+    color: var(--output-color);
     font-size: 1.75rem;
 }
 

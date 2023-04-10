@@ -1,3 +1,4 @@
+import { $ } from './library.js';
 import MessageBox from './classes/messagebox_class.js';
 import Timer from './classes/timer_class.js';
 import Container from './classes/container_class.js';
@@ -7,15 +8,18 @@ import Calculator from './classes/calculator_class.js';
 const msgBox = new MessageBox('../msgbox.css'),
       tmrDemo = new Timer(12,0,0,'divClock'),
       divClock = new Container('divClockFrame'),
-      collIntervals = new IntervalCollection('Test');
+      collIntervals = new IntervalCollection('Test'),
+      calc = new Calculator();
       
 
-const chkAlert = document.getElementById('chkAlert'),
-      chkShowClock = document.getElementById('chkShowClock'),
-      chkTimeout = document.getElementById('chkTimeout'),
-      pInfo = document.getElementById('pInfo'),
-      btnShowClock = document.getElementById('btnShowContainer'),
-      btnRunTimer = document.getElementById('btnStartTimer');
+const chkAlert = $('chkAlert'),
+      chkShowClock = $('chkShowClock'),
+      chkTimeout = $('chkTimeout'),
+      pInfo = $('pInfo'),
+      btnShowClock = $('btnShowContainer'),
+      btnRunTimer = $('btnStartTimer'),
+      imgShowCalc = $('imgCalcPopup'),
+      imgShowCalcFull = $('imgCalcFullscreen');
 
 runApp();
 
@@ -25,6 +29,9 @@ function runApp() {
     btnRunTimer.addEventListener('click', startDemo);    
     document.addEventListener('timerexpired', timeOutAlert);   
     document.addEventListener('timeout', countDownAlert); 
+    Array.from($('input[type="radio"][name="calcstyle"]')).forEach((radio) => {
+        radio.addEventListener('click', () => resetStylesheets());
+    });
     tmrDemo.sound = './sound/tick tack.mp3';
     tmrDemo.soundPlayTime = 3;
     tmrDemo.soundEnabled = true;
@@ -34,7 +41,37 @@ function runApp() {
     // collIntervals.add(intervalDemo, 5000, 'intervalDemo');
     // collIntervals.add(intervalDemo, 5000, tmrDemo);
     // collIntervals.list();
-    let calc = new Calculator('./style/calculator.css');
+    // let calc = new Calculator('./style/calculator.css');
+    // let calc = new Calculator('./style/calculator_neumorphic.css');
+
+    // "input[type='radio'][name='rate']:checked"
+
+    imgShowCalc.addEventListener('click', showCalculator);
+    imgShowCalcFull.addEventListener('click', showCalculator);
+}
+
+function showCalculator(event) {
+    // get the chosen stylesheet
+    const style = $('input[type="radio"][name="calcstyle"]:checked').value;
+    calc.stylesheet = style;
+    if (event.target.id == 'imgCalcFullscreen') {        
+        calc.show();
+    } else {
+        calc.show('inpCalcResult');
+    }
+    
+}
+
+function resetStylesheets() {
+    const sheets = $('link[rel="stylesheet"][href*="calculator"]');
+    if (sheets instanceof NodeList) {
+        for(let i=0 ; i < sheets.length; i++){
+            const sht = sheets[i];
+            sht.parentNode.removeChild(sht);
+        }
+    } else {
+        sheets.parentNode.removeChild(sheets);
+    }
 }
 
 function toggleClock() {
@@ -61,14 +98,14 @@ async function startDemo() {
         tmrDemo.setTime(0,0,0);
         tmrDemo.start();
     } else if (answer == 'Countdown 10s') {
-        document.getElementById('chkTimeout').removeAttribute('disabled');
-        document.querySelector('[for="chkTimeout"]').removeAttribute('disabled');
+        $('chkTimeout').removeAttribute('disabled');
+        $('[for="chkTimeout"]').removeAttribute('disabled');
         tmrDemo.countDown(10);
         pInfo.innerText = answer;
         return;
     } else if (answer == 'Alarm in 10s') { 
-        document.getElementById('chkAlert').removeAttribute('disabled');
-        document.querySelector('[for="chkAlert"]').removeAttribute('disabled');
+        $('chkAlert').removeAttribute('disabled');
+        $('[for="chkAlert"]').removeAttribute('disabled');
         tmrDemo.setAlert(time.getHours(), time.getMinutes(), time.getSeconds() + 10);       
         tmrDemo.setTime();    
         pInfo.innerText = 'Alarm: ' + time.getHours() +':'+ time.getMinutes() +':'+ Number(time.getSeconds() + 10);  

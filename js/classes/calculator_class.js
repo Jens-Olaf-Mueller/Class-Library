@@ -1,17 +1,27 @@
 import Library from './library_class.js';
+import { $ } from '../library.js';
 
-const MEM_DISPLAY = 'divMemDisplay',
+const CALC_POD = 'divCalculator',
+      CALC_GRID = 'divGrid',
+      CALC_DISPLAY = 'divOutput',
+      MEM_DISPLAY = 'divMemDisplay',
       PREV_OPERAND = 'divPrevOperand',
       CURR_OPERAND = 'divCurrOperand';
 
 class Calculator extends Library {
-    #element = null;
+    #calculator;
     #buttons;
-    get executeOperators() { return 'n! x² √ ± % 1/x'; } 
-
     #currOpDisplay;
     #prevOpDisplay;
     #memDisplay;
+    #buddy = null;
+    #opsCount = 0;
+    get operatorSwitched() { return this.#opsCount > 1; }
+
+    get executeOperators() { return 'n! x² √ ± % 1/x'; } 
+
+    get result() { return this.#currOpDisplay.innerText;}
+
     get currOperandDisplay() { return this.#currOpDisplay.innerText; }
     set currOperandDisplay(value) {
         this.#currOpDisplay.innerText = value;
@@ -34,10 +44,23 @@ class Calculator extends Library {
         return parseFloat(this.previousOperand.toString().replace(this.decSeparator, '.')); 
     }
 
+    get buddy() { return this.#buddy; }
+    set buddy(newBuddy) {
+        const buddy = this.getElement(newBuddy);
+        if (buddy instanceof HTMLElement && 
+            buddy.tagName.toLocaleLowerCase() == 'input' && 
+            (buddy.getAttribute('type') == 'number' || buddy.getAttribute('type') == 'text')){
+                this.#buddy = buddy;
+                // const enter = $('btnEquals');
+                // enter.innerHTML = '&#9166';
+                // this.setAttributes(enter, {style: 'font-size: xx-large;'});
+        }
+    }
+
+    get operandsDifferent() { return this.currentOperand != this.previousOperand && this.previousOperand != ''; }
 
     currentOperand;
     previousOperand;
-    
     operation;
     memory = null;
     error = false;
@@ -60,24 +83,39 @@ class Calculator extends Library {
         return decSep;
     }
 
-    get element() { return this.#element; }
+    get calculator() { return this.#calculator; }
 
     get buttons() { return this.#buttons; }
  
     constructor(styleSheet, parent) {
         super(styleSheet);
         this.parent = (parent == undefined) ? document.body : parent;
-        this.#render();
-        this.#setEventListeners();
+    }
+
+    /**
+     * Displays the calculator on screen.
+     * @param {string} displayMode Either 'fullscreen' (default) or 'popup'
+     * @param {HTMLElement} buddy Corresponding input-element to receive the result
+     */
+    show(buddy, displayMode = 'fullscreen') {
+        this.#render(buddy);
+        this.buddy = buddy;       
+        this.#setEventListeners();        
         this.clear();
     }
 
-    show() {
-        
+    hide(event) {
+        if (event && (event.target == this.calculator && !this.buddy) || 
+            event.target == this.buttons[32]) {
+            this.calculator.remove();
+            this.#buddy = null;
+        }        
     }
 
-    hide() {
-        this.cssAddStyle(this.element, 'display: none;')
+    returnValue(event) {
+        if (!this.calcDone) this.compute();
+        this.buddy.value = this.error ? '' : this.result;
+        this.hide(event);
     }
 
     /**
@@ -85,11 +123,9 @@ class Calculator extends Library {
      */
     clear() {
         this.currentOperand = '0';
-        // this.currentOperand = 'Math.sqrt((12 + 8)* 4 + 20)'; // testing eval
         this.previousOperand = '';
         this.operation = null;
-        this.error = false;
-        // this.error = 'Division by zero';        
+        this.error = false;      
         this.calcDone = false;
         this.updateDisplay();
     }
@@ -106,9 +142,14 @@ class Calculator extends Library {
     }
 
     updateDisplay() {
-        if (this.error) this.operation = null;
-        this.currOperandDisplay = (this.error) ? this.error : this.#formatNumber(this.currentOperand);
-        this.prevOperandDisplay = this.operation ? `${this.#formatNumber(this.previousOperand)} ${this.operation}` : this.error ? 'Error' : '';
+        if (this.error) {
+            this.prevOperandDisplay = 'Error';
+            this.currOperandDisplay = this.error;
+            this.operation = null;
+        } else {
+            this.prevOperandDisplay = this.operation ? this.#formatNumber(this.previousOperand) + this.operation : this.previousOperand;
+            this.currOperandDisplay = this.#formatNumber(this.currentOperand);
+        }
         this.memDisplay = this.memory ? 'M' : '';
     }
 
@@ -118,8 +159,22 @@ class Calculator extends Library {
         openBracket = term.indexOf('('),
         closeBracket = term.indexOf(')'),
         stringNumber = term.replace(/[()]/g, ''),
-        integerDigits = parseFloat(stringNumber.split(this.decSeparator)[0]),
-        decimalDigits = stringNumber.split(this.decSeparator)[1];
+        decimalDigits = stringNumber.split(this.decSeparator)[1],
+        integerDigits = isNaN(decimalDigits) ? parseInt(stringNumber) : parseFloat(stringNumber.split(this.decSeparator)[0]);
+
+        const therm = {
+            separator: this.decSeparator,
+            stringNumber: term.replace(/[()]/g, ''),
+            bracket: {
+                open: {position: term.indexOf('('), get exists() {return this.position > -1}},
+                close: {position: term.indexOf(')'),get exists() {return this.position > -1}}                
+            },          
+            get integerDigits() { return parseFloat(this.stringNumber.split(this.separator)[0]); },
+            get decimalDigits() { return parseFloat(this.stringNumber.split(this.separator)[1]); },
+            get isInteger() {return isNaN(this.decimalDigits); }
+        }
+
+        console.log('therm: ', therm)       
   
         let integer = '';
         if (!isNaN(integerDigits)) {
@@ -127,82 +182,104 @@ class Calculator extends Library {
         }
 
         // adding the removed brackets again:
-        if (openBracket != -1) {
+        // if (openBracket != -1) {
+        if (therm.bracket.open.exists) {
             integer = integer.substring(0, openBracket) + '(' + integer.substring(openBracket);
             if (closeBracket != -1 && !decimalDigits) {
                 integer = integer.substring(0, closeBracket) + ')' + integer.substring(closeBracket);
             }
         }
 
-        if (!decimalDigits) return integer;
+        if (!decimalDigits) return term.endsWith(this.decSeparator) ? integer + this.decSeparator : integer;
         let output = `${integer}${this.decSeparator}${decimalDigits}`;
         if (closeBracket != -1) output = output.substring(0, closeBracket) + ')' + output.substring(closeBracket);
         return output;
-
-        // if (decimalDigits != null) {
-        //     return `${integer}${this.decSeparator}${decimalDigits}`;
-        // } else {
-        //     return integer;
-        // }
     }
 
+    // TODO
+    // Nach single-Operation funktioniert Eingabe von 0,x nicht!
+    // was ist nach x² anders als nach 5 x 5...????
     /**
      * Appends a number as current digit to the display.
      * @param {string} number Numerical string or PI
      */
     appendNumber(number) {
         if (this.error) return;
-        const PI = Math.PI.toString().replace('.', this.decSeparator);
-        if (number == 'π') {
+        const decSep = this.decSeparator, PI = Math.PI.toString().replace('.', decSep);
+        // allow only ONE decimal separator!
+        if (number == decSep) {
+            if (this.currentOperand.includes(decSep) && this.operandsDifferent) return;
+        } else if (number == 'π') {
             number = PI;
             this.currentOperand = ''; // don't add PI behind existing digits!
         }
-        // allow only ONE decimal separator!
-        if (number === this.decSeparator) {
-            if (this.currentOperand.includes(this.decSeparator) && this.currentOperand != this.previousOperand) return;
-            number = this.decSeparator;            
-        } 
+
         // make sure that first operator keeps in correct place in display
-        if (!this.opIsPending || this.currentOperand != this.previousOperand) {
+        if (!this.opIsPending || this.operandsDifferent) {
             if (this.calcDone) {
-                this.currentOperand = '';
                 this.calcDone = false;
+                if (!this.currentOperand.startsWith(`0${decSep}`)) this.currentOperand = '';
+                if (number == decSep) this.currentOperand = '0';                
             }
             // avoid inputs like 0815 and don't allow digtits after PI!
-            if (this.currentOperand == '0'|| this.currentOperand == PI) this.currentOperand = '';          
-            // if (this.currentOperand.toString() == PI) this.currentOperand = ''; // 
-            this.currentOperand = this.currentOperand.toString() + number.toString();
+            if ((this.currentOperand == '0' && number != decSep) || 
+                this.currentOperand == PI) this.currentOperand = '';
+            if (this.currentOperand.includes('(0') && !this.currentOperand.includes(decSep) && number != decSep) 
+                this.currentOperand = this.currentOperand.replace('(0','(');
+            if (this.currentOperand.length < 15) this.currentOperand += number.toString();
         } else {
             // add a leading 0 if input is just the decimal seperator
-            if (number == this.decSeparator) number = '0' + this.decSeparator;
+            if (number == decSep) number = '0' + decSep;
             this.currentOperand = number.toString();
-        }        
+        }
+        this.#opsCount = 0;        
         this.updateDisplay();
     }
 
     evaluateOperation(operation) {
         if (this.error || this.currentOperand == '') return;
-        if (this.executeOperators.includes(operation)) {            
-            this.compute(operation);
+        if (this.executeOperators.includes(operation)) { 
+            this.executeSingleOperator(operation);
             return;
         }
-        if (this.previousOperand !== '') {
-            this.compute(); 
-            this.calcDone = false; // allow chain computing with previous result!
-        } 
-        if ('()'.includes(operation)) {
-            operation = this.checkForBrackets(operation)
-            debugger
-            this.currentOperand = (operation == '(') ? operation + this.currentOperand : this.currentOperand +operation;
-            operation = null;
-        }
+        this.#opsCount++;
+        // allow chain computing with previous result!    
+        if (this.previousOperand && this.opIsPending && !this.operatorSwitched) this.compute(false);
 
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
+        if ('()'.includes(operation)) {
+            operation = this.#checkForBrackets(operation)
+            if (operation == '(') {                
+                if (this.operation) {
+                    debugger
+                    this.previousOperand = this.currentOperand + this.operation + '(';
+                    this.currentOperand = '0';
+                    this.operation = null;
+                } else {
+                    this.currentOperand = '(' + this.currentOperand; // input number after bracket!
+                }
+                // operation = this.operation; // keep the previous operation!
+            } else if (operation == ')') {
+                this.previousOperand = this.previousOperand + this.operation + this.currentOperand + ')';
+                const term = this.#createTerm(this.previousOperand);
+                this.currentOperand = eval(term); // this.evaluate(term);
+                this.operation = null;
+            }
+        } else {
+            this.operation = operation;
+            this.previousOperand = this.currentOperand;
+        }
         this.updateDisplay();
     } 
 
-    checkForBrackets() {
+    #createTerm(expression) {
+        expression = expression.replace('÷', '/').replace('×', '*')
+        expression = expression.replace(/^0+/, ''); // remove leading zeros!
+        const regexp = new RegExp(this.decSeparator, 'g');
+        expression = expression.replace(regexp, '.');
+        return expression;
+    }
+
+    #checkForBrackets() {
         if (this.previousOperand.indexOf('(') == -1 || 
             this.previousOperand.indexOf('(') != -1 && 
             this.previousOperand.indexOf(')') != -1 && 
@@ -236,11 +313,7 @@ class Calculator extends Library {
         this.updateDisplay();
     }
 
-    compute(operation) {
-        if (operation !== undefined) {
-            this.executeSingleOpCalculation(operation);
-            return;
-        }
+    compute(calcdone = true) {
         // make sure we got some operands:
         if (isNaN(this.prevValue) || isNaN(this.currValue)) return;
         let result;
@@ -249,24 +322,26 @@ class Calculator extends Library {
                 break;
             case 45: result = this.prevValue - this.currValue;  // minus            
                 break;
-            case 215: result = this.prevValue * this.currValue; // times             
+            case 215: result = this.prevValue * this.currValue; // multiply ×             
                 break;
-            case 247:                                           // divide
+            case 247:                                           // divide ÷
                 result = this.prevValue / this.currValue;  
-                if (result === Infinity) this.error = 'Division by zero';
+                if (result === Infinity || isNaN(result)) this.error = 'Division by zero';
                 break;
             default: return;
         }
-        if (!this.error) this.currentOperand = this.round(result, 12).toString();
+        if (!this.error) this.currentOperand = this.round(result, 12).toString().replace('.', this.decSeparator);
         this.operation = null;
         this.previousOperand = ''
-        this.calcDone = true;
+        this.calcDone = calcdone;
         this.updateDisplay();
     }
 
-    executeSingleOpCalculation(operation) {
+    executeSingleOperator(operation) {
         switch (operation) {
-            case 'x²': this.currentOperand = this.round(Math.pow(this.currValue, 2), 12).toString();                            
+            case 'x²': 
+                this.operation = 'square(' + this.currentOperand + ')';
+                this.currentOperand = this.round(Math.pow(this.currValue, 2), 10).toString();                            
                 break;
             case '±': this.currentOperand = (this.currValue * -1).toString();
                 break;
@@ -274,6 +349,7 @@ class Calculator extends Library {
                 if (this.currValue == 0) {
                     this.error = 'Division by zero';
                 } else {
+                    this.operation = 'reciproc(' + this.currentOperand + ')';
                     this.currentOperand = (1 / this.currValue).toString();
                 } 
                 break;
@@ -285,12 +361,13 @@ class Calculator extends Library {
                 if (this.currValue < 0) {
                     this.error = 'Negative root';
                 } else {
+                    this.operation = '√(' + this.currentOperand + ')';
                     this.currentOperand = Math.sqrt(this.currValue).toString();
                 }                
                 break;
             case 'n!':
-                this.operation = this.currentOperand + '!';
-                this.currentOperand = this.factorial(this.currValue);                       
+                this.operation = 'fact(' + this.currentOperand + ')';
+                this.currentOperand = this.factorial(this.currValue).toString();                       
                 break;
             default:
                 break;
@@ -302,7 +379,10 @@ class Calculator extends Library {
     factorial(number) {        
         if (number.toLocaleString().includes(this.decSeparator) || number < 0) {
             this.error = 'Not defined';
-            return;
+            return '';
+        } else if (number > 200) {
+            this.error = 'Overflow';
+            return '';
         }
         if (number == 0 || number == 1) return 1;    
         let result = number;    
@@ -315,6 +395,8 @@ class Calculator extends Library {
     }
 
     evaluate(expression) {
+        expression = expression.replace('÷', '/').replace('×', '*')
+        expression = expression.replace(/^0+/, ''); // remove leading zeros!
         return Function(`'use strict'; return (${expression})`)()
     }
 
@@ -324,24 +406,30 @@ class Calculator extends Library {
         return retVal;
     }
 
-    #render() {
-        const pod = document.createElement('div');
-        this.setAttributes(pod, {class: 'calculator-parent'});
-        const grid = document.createElement('div');
-        this.setAttributes(grid, {class: 'calculator-grid'});
-        const output = document.createElement('div');
-        this.setAttributes(output, {class: 'output'});
 
-        grid.appendChild(output);
-        pod.appendChild(grid);
-        this.parent.appendChild(pod);
-
-        this.#createDisplay(output);
-        this.#createButtons(grid);
+    #render(buddy) {
+        this.#createPod();
+        this.#createDisplay($(CALC_DISPLAY));
+        this.#createButtons($(CALC_GRID), buddy);
         this.#createMemButtons();
         this.#createNumButtons();
-        this.#createSpecialButtons();   // ATTENTION! Must be BEFORE operators!
+        this.#createSpecialButtons(buddy);   // ATTENTION! Must be BEFORE operators!
         this.#createOperatorButtons();  // OP-buttons are the ones that are left in the DOM!
+    }
+
+
+    #createPod() {
+        const _parent = this.parent;
+        const arrComponents = [
+            {attributes: {id: CALC_POD, class: 'calculator-overlay'}, parent: _parent},
+            {attributes: {id: CALC_GRID, class: 'calculator-grid'}, parent: CALC_POD},
+            {attributes: {id: CALC_DISPLAY, class: 'output'}, parent: CALC_GRID},
+        ].forEach(item => {
+            const div = document.createElement('div');
+            this.setAttributes(div, item.attributes);
+            this.getElement(item.parent).appendChild(div);
+            if (item.parent == _parent) this.#calculator = div; // set the calculator element for access to hide    
+        });
     }
 
     #createDisplay(parentNode) {
@@ -354,23 +442,26 @@ class Calculator extends Library {
             this.setAttributes(div, item);
             parentNode.appendChild(div);       
         });
-        this.#currOpDisplay = document.getElementById(CURR_OPERAND);
-        this.#prevOpDisplay = document.getElementById(PREV_OPERAND);        
-        this.#memDisplay = document.getElementById(MEM_DISPLAY);
+        this.#currOpDisplay = $(CURR_OPERAND);
+        this.#prevOpDisplay = $(PREV_OPERAND);        
+        this.#memDisplay = $(MEM_DISPLAY);
     }
 
-    #createButtons(parentNode) {
-        for (let i = 0; i < 32; i++) {
+    #createButtons(parentNode, buddy) {
+        for (let i = 0; i < 33; i++) {       
             parentNode.appendChild(document.createElement('button'));         
-        }
-        this.#buttons = Array.from(document.querySelectorAll('.calculator-grid >button'));
+        }        
+        this.#buttons = Array.from($('.calculator-grid >button'));
+        this.buttons[32].innerHTML = '&#9166';
+        const display = buddy ? 'block' : 'none';
+        this.setAttributes(this.buttons[32], {style: `display: ${display}; font-size: xx-large;`});
     }
 
     #createMemButtons() {        
         const captions = ['MR','MS','MC','M+','M-'];
         for (let i = 0; i < 5; i++) {
             this.buttons[i].appendChild(document.createTextNode(`${captions[i]}`));
-            this.setAttributes(this.buttons[i], {'data-memory': '', class: 'btn-memory'})         
+            this.setAttributes(this.buttons[i], {class: 'btn-memory', 'data-memory': ''})         
         }
     }
 
@@ -395,20 +486,22 @@ class Calculator extends Library {
         }
     }
 
-    #createSpecialButtons() {
-        const arrSpecials = [
+    #createSpecialButtons(buddy) {
+        const colSpan2 = buddy ? '' : ' col-span2';
+        const arrSpecialButtons = [
             {index: 5, caption: 'AC', attributes: {class: 'btn-special span2', 'data-allclear': ''}},
             {index: 8, caption: 'DEL', attributes: {class: 'btn-special', id: 'btnDelete', 'data-delete': ''}},
-            {index: 28, caption: '=', attributes: {class: 'btn-equals col-span2', id: 'btnEquals', 'data-equals': ''},
+            {index: 28, caption: '=', attributes: {class: `btn-equals${colSpan2}`, id: 'btnEquals', 'data-equals': ''}
         }].forEach(item => {
             const btn = this.buttons[item.index];
             btn.appendChild(document.createTextNode(item.caption));
             this.setAttributes(btn, item.attributes);
         });
+        if (buddy) this.setAttributes(this.buttons[32], {class: 'btn-return btn-equals', id: 'btnReturn', 'data-return': ''});
     }    
 
     #createOperatorButtons() {
-        const arrOperators = Array.from(document.querySelectorAll('.calculator-grid >button')).filter((btn) => {
+        const arrOperators = Array.from($('.calculator-grid >button')).filter((btn) => {
             return btn.attributes.length == 0;
         });
         const arrCaptions = '( ) n! x² √ ± &#247 % &#215 1/x - +'.split(' ');
@@ -420,27 +513,23 @@ class Calculator extends Library {
     }
 
     #setEventListeners() {
-        document.querySelectorAll('[data-number]').forEach(btn => {
-            btn.addEventListener('click', (event) => {
-                this.appendNumber(btn.innerText);
-            });
+        $('[data-number]').forEach(btn => {
+            btn.addEventListener('click', () => this.appendNumber(btn.innerText));
         });
-        document.querySelectorAll('[data-memory]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.executeMemoryOperation(btn.innerText.slice(-1));
-            });
+        $('[data-memory]').forEach(btn => {
+            btn.addEventListener('click', () => this.executeMemoryOperation(btn.innerText.slice(-1)));
         });
-
-        document.querySelectorAll('[data-operator]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.evaluateOperation(btn.innerText);
-            })
-        })
-
-        document.querySelectorAll('[data-allclear]')[0].addEventListener('click', () => this.clear());
-        document.querySelectorAll('[data-delete]')[0].addEventListener('click', btn => this.delete());
-        document.querySelectorAll('[data-equals]')[0].addEventListener('click', btn => this.compute());
-        
+        $('[data-operator]').forEach(btn => {
+            btn.addEventListener('click', () => this.evaluateOperation(btn.innerText));
+        });
+        $('[data-allclear]').addEventListener('click', () => this.clear());
+        $('[data-delete]').addEventListener('click', () => this.delete());
+        $('[data-equals]').addEventListener('click', () => this.compute()); 
+        if (this.buddy) {
+            $('btnReturn').addEventListener('click', (event) => this.returnValue(event));
+        } else {
+            this.calculator.addEventListener('click', (event) => this.hide(event));
+        }
     }
 }                 
 
