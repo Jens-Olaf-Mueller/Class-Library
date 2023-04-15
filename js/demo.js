@@ -24,7 +24,9 @@ const chkAlert = $('chkAlert'),
 runApp();
 
 function runApp() {
-    // btnShowClock.addEventListener('click', toggleClock);
+    Array.from($('rgb')).forEach((rgb) => {
+        rgb.addEventListener('input', () => displayColor());
+    });
     chkShowClock.addEventListener('change', toggleClock);
     btnRunTimer.addEventListener('click', startDemo);    
     document.addEventListener('timerexpired', timeOutAlert);   
@@ -37,7 +39,7 @@ function runApp() {
     tmrDemo.soundEnabled = true;
     divClock.hide();
     divClock.addEventListener('click', clockClicked);
-    console.log(divClock.events)
+    // console.log(divClock.events)
     // collIntervals.add(intervalDemo, 5000, 'intervalDemo');
     // collIntervals.add(intervalDemo, 5000, tmrDemo);
     // collIntervals.list();
@@ -48,6 +50,32 @@ function runApp() {
 
     imgShowCalc.addEventListener('click', showCalculator);
     imgShowCalcFull.addEventListener('click', showCalculator);
+
+    // $('jomText').setAttribute('disabled','disabled');
+    // $('jomText').removeAttribute('disabled');
+    const clr = new Color();
+    // console.log(clr.getName(clr.parseColor('#0000ff')))
+    // clr.parseColor(0,0,255);
+    console.log(clr.toRGBA$(clr.parseColor('255,255,0')));
+    // clr.parseColor('green');
+    
+}
+
+function displayColor() {
+    const rgb = Array.from($('rgb')).map(item => {return item.value});
+    const colorName = $('h4ColorName'),
+          inpColorName = $('inpColorName'),
+          clsColor = new Color();         
+    const currCol = ($('inpHex').checked) ? '#'+rgb[0]+rgb[1]+rgb[2] : rgb;
+
+    
+    colorName.textContent = clsColor.getName(currCol);
+    $('h4HexValue').innerText = clsColor.toHex(currCol);
+    inpColorName.value = clsColor.getName(currCol) || '';
+    
+           
+    
+
 }
 
 function showCalculator(event) {

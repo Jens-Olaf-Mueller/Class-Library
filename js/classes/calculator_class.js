@@ -51,9 +51,6 @@ class Calculator extends Library {
             buddy.tagName.toLocaleLowerCase() == 'input' && 
             (buddy.getAttribute('type') == 'number' || buddy.getAttribute('type') == 'text')){
                 this.#buddy = buddy;
-                // const enter = $('btnEquals');
-                // enter.innerHTML = '&#9166';
-                // this.setAttributes(enter, {style: 'font-size: xx-large;'});
         }
     }
 
@@ -272,6 +269,7 @@ class Calculator extends Library {
     } 
 
     #createTerm(expression) {
+        // string.replaceAll(search, replaceWith) replaces all string occurrences.
         expression = expression.replace('÷', '/').replace('×', '*')
         expression = expression.replace(/^0+/, ''); // remove leading zeros!
         const regexp = new RegExp(this.decSeparator, 'g');
@@ -317,14 +315,14 @@ class Calculator extends Library {
         // make sure we got some operands:
         if (isNaN(this.prevValue) || isNaN(this.currValue)) return;
         let result;
-        switch (this.operation.charCodeAt(0)) {            
-            case 43: result = this.prevValue + this.currValue;  // add              
+        switch (this.operation) {            
+            case '+': result = this.prevValue + this.currValue;  // charcode 43             
                 break;
-            case 45: result = this.prevValue - this.currValue;  // minus            
+            case '-': result = this.prevValue - this.currValue;  // charcode 45            
                 break;
-            case 215: result = this.prevValue * this.currValue; // multiply ×             
+            case '×': result = this.prevValue * this.currValue; // charcode 215              
                 break;
-            case 247:                                           // divide ÷
+            case '÷':                                           // charcode 247 
                 result = this.prevValue / this.currValue;  
                 if (result === Infinity || isNaN(result)) this.error = 'Division by zero';
                 break;

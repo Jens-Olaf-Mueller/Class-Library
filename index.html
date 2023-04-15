@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="./style/demo.css">
     <link rel="stylesheet" href="./style/msgbox.css">
 
+    <script defer src="./js/classes/color_class.js"></script>
+    <script defer src="./js/classes/control_class.js"></script> 
+       
     <script defer type="module" src="./js/demo.js"></script>
+
     <!-- <script defer src="./js/classes/intervals_class.js"></script> -->
 </head>
 
@@ -26,12 +30,49 @@
         <aside class="settings">
             <h1>Settings</h1>
             <form id="frmSettings" class="form-settings">
+                <fieldset><legend>Color Demo</legend>
+
+                    <div data-control class="spc-btw">
+                        <div data-control="radiobox">
+                            <input type="radio" id="inpHex" name="hexdec" checked>
+                            <label for="inpHex">hex</label>
+                        </div>
+                        <div data-control="radiobox">
+                            <input type="radio" id="inpDec" name="hexdec">
+                            <label for="inpDec">decimal</label>
+                        </div>
+                    </div>
+                    <div class="color-demo-grid">
+                        <div class="color-left">
+                            <div data-control="numbox">
+                                <label for="inpRed">Red</label>
+                                <input type="text" id="inpRed" name="rgb" value="00">
+                            </div>
+                            <div data-control="numbox">
+                                <label for="inpGreen">Green</label>
+                                <input type="text" id="inpGreen" name="rgb" value="00">
+                            </div>
+                            <div data-control="numbox">
+                                <label for="inpBlue">Blue</label>
+                                <input type="text" id="inpBlue" name="rgb" value="00">
+                            </div>          
+                            <div data-control="numbox">
+                                <label for="inpColorName">Color</label>
+                                <input type="text" id="inpColorName" value="black">
+                            </div>              
+                        </div>
+                        <div class="color-right">
+                            <h4 id="h4ColorName">black</h4>
+                            <h4 id="h4HexValue" class="hex-value">#000000</h4>
+                        </div>
+                    </div>                                       
+                </fieldset>
+
                 <fieldset><legend> Timer Demo </legend>
                     <div data-control="checkbox">
                         <input type="checkbox" id="chkShowClock">
                         <label for="chkShowClock">Show clock</label>
                     </div>
-
                     <div data-control="checkbox" id="ctlTimeout">
                         <input type="checkbox" id="chkTimeout" checked>
                         <label for="chkTimeout">Message, wenn Countdown abgelaufen ist</label>
@@ -59,7 +100,7 @@
 
                     <div data-control class="spc-btw">
                         <div data-control="numbox">
-                            <label for="inpCalcResult">Popup...</label>
+                            <label for="inpCalcResult">Buddy</label>
                             <input type="text" id="inpCalcResult">
                             <img id="imgCalcPopup" src="./img/calculator512.png">
                         </div>
@@ -70,7 +111,16 @@
                     </div>
                 </fieldset>              
             </form>
-        </aside>    
+
+            <!-- <jom-control type="number">Caption for Control: 
+                <input type="number">
+            </jom-control> -->
+    
+            <jom-control id="jomText" type="number" caption="Anzahl: " unit="Stck"></jom-control>
+        </aside>
+        
+
+
         <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="800" baseProfile="full" viewBox="-21 -21 42 42">
             <defs>
                 <radialGradient id="b" cx=".2" cy=".2" r=".5" fx=".2" fy=".2">

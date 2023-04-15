@@ -89,8 +89,12 @@ form.form-settings {
     margin-right: 0.5rem;
 }
 
+[data-control="numbox"] label {
+    width: 3rem;
+}
+
 [data-control="numbox"] input {
-    width: 5rem;
+    width: 4.5rem;
     text-align: right;
     margin-left: 0.5rem;
     padding-right: 0.5rem;
@@ -112,4 +116,42 @@ form.form-settings {
     align-items: center;
     justify-content: center;
     background-color: rgb(250, 132, 111);
+}
+
+.color-demo-grid {
+    /* display: flex;
+    flex-direction: row !important;
+    justify-content: space-between; */
+
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);    
+    grid-gap: 0.5rem;
+}
+
+.color-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.color-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px double silver;
+    text-align: center;
+    color: whitesmoke;
+    background-color: black;
+}
+
+jom-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* font-weight: bold; */
+    /* border: 1px solid black;
+    border-radius: 2px; */
+    /* translate: -10%; */
+    /* color:  #888888 */
 }
