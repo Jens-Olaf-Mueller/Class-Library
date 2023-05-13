@@ -1,6 +1,14 @@
+:root {
+    --tab-color: lightyellow;
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Verdana, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 @font-face {
@@ -10,45 +18,119 @@
 
 main {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 2rem;
+    padding: 0 0.75rem;
 }
 
-aside.settings, aside.buttons, form.form-settings fieldset {
+main>h1 {
+    margin: 1rem 0;
+    text-align: center;
+    text-shadow: -3px -3px 3px #fff, 3px 3px 3px rgba(0, 0, 0, 0.4);
+}
+
+form.settings {
+    padding: 1rem;
+    background-color: var(--tab-color);
+}
+
+/* Style the tabStrip */
+/* .tabStrip {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+} */
+
+/* Style the buttons inside the tabStrip */
+.tabStrip .btnTab {
+    background-color: #f1f1f1;
+    float: left;
+    outline: none;
+    border-top: 1px solid whitesmoke;
+    border-left: 1px solid whitesmoke;
+    border-right: 1px solid #555;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;    
+    cursor: pointer;
+    padding: 1rem;
+    transition: 200ms;
+    font-size: 1.1rem;
+}
+
+/* Change background color of buttons on hover */
+.tabStrip button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tabStrip button.active {
+    background-color: var(--tab-color);
+    border-left: 1px solid #aaa;
+    border-top: 1px solid #555;
+    padding-top: 0.5rem;
+    padding-bottom: 1.5rem;
+    text-shadow: -1px -1px 2px #fff, 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Style the tabStrip content */
+.tabcontent {
+    display: none; /* display: grid; */    
+    /* grid-template-columns: repeat(2, 1fr); */
+    grid-template-columns: repeat(2, minmax(50%, 1fr));
+    grid-gap: 0.5rem;
+    border: none;
+}
+
+.tabcontent-left,
+.tabcontent-right {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.75rem;
 }
 
-fieldset {
-    margin-bottom: 1rem;
+.watermark {
+    position: absolute;
+    color: whitesmoke;
+    opacity: 0.4;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
-aside button {
-    width: 8rem;
-    padding: 0.5rem 1rem;
+.code {
+    padding: 0.75rem;
+    overflow: scroll;
+    font-family: monospace !important;
+    font-weight: bold;
+    color: deeppink;
+    background-color: #f6f6f6;
+    border: 1px solid silver;
+    border-radius: 4px;
+}
+
+.green {
+    padding: 0.25rem;
+    background-color: silver;
+    color: navy;
+    border-radius: 4px;
+}
+
+.btn-run-demo {
+    min-width: auto;
+    width: 12rem;
+    padding: 0.5rem;
     background-color: navy;
     color: whitesmoke;
-    border: 0;
-    border-radius: 4px;    
-    font-weight: bold;
-    cursor: pointer;
+    outline: none;
+    border: none;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    cursor: pointer;    
 }
 
-aside button:hover {
+.btn-run-demo:hover {
     filter: brightness(1.25);
-}
-
-aside button:disabled, aside button:disabled:hover {
-    background-color: #ccc;
-    filter: brightness(1);
-}
-
-form.form-settings {
-    padding: 1rem;
-    background-color: aliceblue;
-    border: 3px double silver;
+    box-shadow: 4px 4px 8px 4px rgba(0, 0, 0, 0.25);
 }
 
 .clock-frame {
@@ -69,34 +151,45 @@ form.form-settings {
     font-size: 1.25rem;
 }
 
-[disabled] {
-    color: #aaa;
-}
-
-[data-control] {
-    display: flex;
-    align-items: center;
-}
-
+/* ################################################### */
+/* ###          STYLING THE FORM CONTROLS          ### */
+/* ################################################### */
 .spc-btw {
     justify-content: space-between;
 }
 
-[data-control="checkbox"] input,
-[data-control="radiobox"] input {
+/* [disabled] {
+    color: #999;
+} */
+
+[data-control]:not(link) {
+    display: flex;
+    align-items: center;
+}
+
+[data-control] label {
+    min-width: 6rem;
+}
+
+[data-control="checkbox"] input[type="checkbox"],
+[data-control="radiobox"] input[type="radio"] {
     width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.5rem;
+    height: 1.25rem; 
+    /* margin-right: 0.5rem; */
+    width: 1.25rem;
+    height: 75%;
+    max-height: 1.25rem;
+} 
+
+[data-control] input[type="text"] {
+    min-width: 20rem;
+    width: auto;
 }
 
-[data-control="numbox"] label {
-    width: 3rem;
-}
-
-[data-control="numbox"] input {
+[data-control="numbox"] input[type="text"] {
     width: 4.5rem;
+    min-width: unset;
     text-align: right;
-    margin-left: 0.5rem;
     padding-right: 0.5rem;
 }
 
@@ -106,35 +199,27 @@ form.form-settings {
     cursor: pointer;
 }
 
-#divContainerDemo {
-    height: 8rem;
-    width: 12rem;
-    border: 3px double silver;
-    padding: 0.5rem;
+#divDemoContainer {
+    position: relative; 
+    width: 100%; 
+    padding: 1rem;    
+    color: #333;
+    background-color: tomato;
+    border: 5px double firebrick;
+    border-radius: 6px;
+    user-select: none;
+}
+
+#divDemoContainer h3 {
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(250, 132, 111);
 }
 
-.color-demo-grid {
-    /* display: flex;
-    flex-direction: row !important;
-    justify-content: space-between; */
-
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);    
-    grid-gap: 0.5rem;
+#divDemoContainer.blue-theme {
+    background-color: royalblue;
+    border: 5px double navy;
 }
 
-.color-left {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.color-right {
+#divColor {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -145,13 +230,39 @@ form.form-settings {
     background-color: black;
 }
 
-jom-control {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    /* font-weight: bold; */
-    /* border: 1px solid black;
-    border-radius: 2px; */
-    /* translate: -10%; */
-    /* color:  #888888 */
+/* jom-control {
+    background-color: wheat;
+} */
+jom-control.no-column {
+    flex-direction: row !important;
 }
+
+
+.jom-input {
+    outline: none;
+    border: 1px solid silver;
+    border-radius: 3px;
+}
+
+.jom-input[type="range"] {cursor: pointer; accent-color: red}
+
+.jom-input:focus{    
+    background-color: lightgreen;
+    border: 1px solid darkgreen;
+}
+
+.jom-checkbox {
+    accent-color: darkgreen;
+    /* background-color: cornflowerblue; */
+}
+
+
+
+
+
+/* @media (max-width: 480px) {
+    jom-control:not([type="checkbox"], [type="range"], [type="color"]) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+} */

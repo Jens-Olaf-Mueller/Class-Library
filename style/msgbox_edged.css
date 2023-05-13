@@ -1,12 +1,12 @@
 :root {
     --msg-text-color: inherit;
     --msg-shadow-color: rgb(0, 0, 0, 0.5);
-    --msg-gradient-color-from: #000A6D;
-    --msg-gradient-color-to: whitesmoke;
-    --msg-background-color: whitesmoke;
-    --msg-button-color: buttonface;
-    --msg-border: 1px solid lavender;
-    --msg-border-radius: 8px;
+    --msg-gradient-color-from: #008000;
+    --msg-gradient-color-to: yellow;
+    --msg-background-color: wheat;
+    --msg-button-color: darkgreen;
+    --msg-border: 4px double darkgreen;
+    --msg-border-radius: none;
     --topmost-z: 2147483647;
 }
 
@@ -48,7 +48,7 @@
     word-wrap: break-word;
     background-color: var(--msg-background-color) !important;
     border-radius: var(--msg-border-radius);
-    box-shadow: 8px 8px 16px var(--msg-shadow-color);
+    box-shadow: none;
     border: var(--msg-border);
     padding: 0 1.5rem 1.5rem;
 }
@@ -72,14 +72,16 @@
     padding: 0.5rem !important; /* oben | rechts | unten | links */
     min-width: 6rem !important; 
     cursor: pointer;
-    border: 1px solid lavender !important;
+    border: none !important;
     border-radius: var(--msg-border-radius) !important;
     background-color: var(--msg-button-color);
-    color: var(--msg-text-color);
+    color: lightgreen;
 }
 .msg-button:hover {
-    border: 1px solid lavender;
-    box-shadow: 0px 2px 15px 5px rgba(0, 0, 0, 0.25);
+    border: 1px solid navy;
+    box-shadow: none;
+    filter: brightness(1.25);
+    /* box-shadow: 0px 2px 15px 5px rgba(0, 0, 0, 0.25); */
 }
 
 @media (max-width: 1280px) {

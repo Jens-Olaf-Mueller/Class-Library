@@ -71,4 +71,19 @@ function getElements(nodeList, child, getLastChild) {
     return Number.isFinite(expression);
 }
 
-export { $ };
+function addWatermark(element, text, center, top, left, bottom, right) {
+    let cssStyle = 'position: absolute;';
+    if (center) {
+        top = '50%';
+        right = '50%';
+    }
+    cssStyle += top ? `top: ${top};` : '';
+    cssStyle += left ? `left: ${left};` : '';
+    cssStyle += bottom ? `bottom: ${bottom};` : '';
+    cssStyle += right ? `right: ${right};` : '';
+    cssStyle += center ? `transform: translate(50%,-50%);` : '';
+    element.innerHTML += `<h2 id="h2-${element.id}" class="watermark">${text}</h2>`;
+    $(`h2-${element.id}`).style.cssText += cssStyle;
+}
+
+export { $, addWatermark };

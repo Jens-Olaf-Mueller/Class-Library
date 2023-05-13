@@ -99,6 +99,10 @@ class Calculator extends Library {
         this.buddy = buddy;       
         this.#setEventListeners();        
         this.clear();
+        if (this.buddy && this.buddy.value) {
+            this.currentOperand = this.buddy.value;
+            this.updateDisplay();
+        }
     }
 
     hide(event) {

@@ -103,7 +103,6 @@ class Container extends Library {
         this.cssAddStyle(this.thisContainer, 'opacity: 1;');
     }
 
-
     /**
      * Fades the the container out.  Opacity is 0.
      * @param {number} time Time in milliseconds the transition shall last.

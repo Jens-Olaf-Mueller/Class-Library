@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class library demo</title>
 
-    <link rel="stylesheet" href="./style/demo.css">
+    <link rel="stylesheet" href="./style/demo.css" data-control>
     <link rel="stylesheet" href="./style/msgbox.css">
 
-    <script defer src="./js/classes/color_class.js"></script>
+    <!-- <script defer src="./js/classes/color_class.js"></script> -->
+    <script defer src="./js/classes/combobox_class.js"></script> 
+    <!-- <script defer src="./js/classes/radiobox_class.js"></script>  -->
     <script defer src="./js/classes/control_class.js"></script> 
-       
+    
     <script defer type="module" src="./js/demo.js"></script>
 
     <!-- <script defer src="./js/classes/intervals_class.js"></script> -->
@@ -19,56 +21,186 @@
 
 <body>
     <main>
-        <aside class="buttons">
-            <div id="divClockFrame" class="clock-frame">
-                <div id="divClock"></div>
-                <p id="pInfo">0:00</p>
-            </div>             
-            <button id="btnStartTimer" disabled>Start Timer-Demo...</button>            
-        </aside>
-
-        <aside class="settings">
-            <h1>Settings</h1>
-            <form id="frmSettings" class="form-settings">
-                <fieldset><legend>Color Demo</legend>
-
-                    <div data-control class="spc-btw">
-                        <div data-control="radiobox">
-                            <input type="radio" id="inpHex" name="hexdec" checked>
-                            <label for="inpHex">hex</label>
-                        </div>
-                        <div data-control="radiobox">
-                            <input type="radio" id="inpDec" name="hexdec">
-                            <label for="inpDec">decimal</label>
-                        </div>
+        <h1>Demo Class Library</h1>
+        <div class="tabStrip">
+            <button class="btnTab">Container</button>
+            <button class="btnTab">Color</button>
+            <button class="btnTab">Messagebox</button>
+            <button class="btnTab">Timer</button>            
+            <button class="btnTab">Calculator</button>
+            <button class="btnTab active">Control</button>
+        </div>
+        <form id="frmSettings" class="settings" autocomplete="off">
+            <fieldset id="fldContainer" class="tabcontent">        
+               <!-- CONTAINER -->
+                <div class="tabcontent-left" style="min-height: 22rem;">
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpShow" name="containermethods" value="show"checked>
+                        <label for="inpShow">.show()</label>
                     </div>
-                    <div class="color-demo-grid">
-                        <div class="color-left">
-                            <div data-control="numbox">
-                                <label for="inpRed">Red</label>
-                                <input type="text" id="inpRed" name="rgb" value="00">
-                            </div>
-                            <div data-control="numbox">
-                                <label for="inpGreen">Green</label>
-                                <input type="text" id="inpGreen" name="rgb" value="00">
-                            </div>
-                            <div data-control="numbox">
-                                <label for="inpBlue">Blue</label>
-                                <input type="text" id="inpBlue" name="rgb" value="00">
-                            </div>          
-                            <div data-control="numbox">
-                                <label for="inpColorName">Color</label>
-                                <input type="text" id="inpColorName" value="black">
-                            </div>              
-                        </div>
-                        <div class="color-right">
-                            <h4 id="h4ColorName">black</h4>
-                            <h4 id="h4HexValue" class="hex-value">#000000</h4>
-                        </div>
-                    </div>                                       
-                </fieldset>
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpHide" name="containermethods" value="hide">
+                        <label for="inpHide">.hide()</label>
+                    </div>
 
-                <fieldset><legend> Timer Demo </legend>
+<!-- <jom-control id="jomContainers" type="radio" options="show,hide" selected="0" name="containermethods"></jom-control> -->
+
+                    <div data-control="numbox">
+                        <label for="inpFade">Fadetime: </label>
+                        <input type="number" id="inpFade" value="750"> ms
+                    </div>
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpFadeIn" name="fade" value="in" checked>
+                        <label for="inpFadeIn">.fadeIn (time)</label>
+                    </div>
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpFadeOut" name="fade" value="out">
+                        <label for="inpFadeOut">.fadeOut (time)</label>
+                    </div>
+
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkEventListener">
+                        <label for="chkEventListener">.addEventListener (click)</label>
+                    </div>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkClass">
+                        <label for="chkClass">.add/removeClass "blue-theme"</label>
+                    </div>
+                    <pre class="code">
+                        <code >
+        .blue-theme {
+            background-color: royalblue;
+            border: 5px double navy;
+        }
+                        </code>
+                    </pre>
+                        
+                </div>
+                <div class="tabcontent-right" id="divDemoContainer">
+                    <h3>This container is assigned to the Container class.</h3>
+                    <p>The container class provides the following methods:</p>
+                    <ul>
+                        <li>show</li>
+                        <li>hide</li>
+                        <li>fadeIn</li>
+                        <li>fadeOut</li>
+                        <li>addEventListener</li>
+                        <li>removeEventListener</li>
+                        <li>addClass</li>
+                        <li>removeClass</li>
+                        <li>toggleClass</li>
+                    </ul>
+                </div>
+            </fieldset>
+
+            <!-- COLOR -->
+            <fieldset id="fldColor" class="tabcontent">
+                    <div class="tabcontent-left">
+                        <h4>The color class allows you simple color handling.</h4>
+                        <p>You can convert colors between <strong>RGB, HSL, HWB, CMYK</strong> format and <strong>HEX-codes</strong>. <br> Further you can use named colors and add new own colors. 
+                        Another feature is recognizing the brighter one of two colors. This can be used to switch automatically the text color depending on the background.
+                        </p>
+                        <div data-control>
+                            <div data-control="radiobox">
+                                <input type="radio" id="inpHex" name="colorformat" value="rgbhex" checked>
+                                <label for="inpHex">RGB hex</label>
+                            </div>
+                            <div data-control="radiobox">
+                                <input type="radio" id="inpDec" name="colorformat" value="rgbdec">
+                                <label for="inpDec">decimal</label>
+                            </div>
+                        </div>
+                            <div data-control="radiobox">
+                                <input type="radio" id="inpHSL" name="colorformat" value="hsl">
+                                <label for="inpHSL">HSL</label>
+                            </div>
+                            <div data-control="radiobox">
+                                <input type="radio" id="inpHWB" name="colorformat" value="hwb">
+                                <label for="inpHWB">HWB</label>
+                            </div>
+                            <div data-control="radiobox">
+                                <input type="radio" id="inpCMYK" name="colorformat" value="cmyk">
+                                <label for="inpCMYK">CMYK</label>
+                            </div>
+                        
+                        <div data-control="numbox">
+                            <label id="lblRed" for="inpRed">Red #</label>
+                            <input type="text" id="inpRed" name="rgb" value="00">
+                        </div>
+                        <div data-control="numbox">
+                            <label id="lblGreen" for="inpGreen">Green #</label>
+                            <input type="text" id="inpGreen" name="rgb" value="00">
+                        </div>
+                        <div data-control="numbox">
+                            <label id="lblBlue" for="inpBlue">Blue #</label>
+                            <input type="text" id="inpBlue" name="rgb" value="00">
+                        </div>   
+                        <div data-control="numbox">
+                            <label id="lblBlack" for="inpBlack" disabled>Black</label>
+                            <input type="text" id="inpBlack" name="rgb" value="00" disabled>
+                        </div>   
+                        <div data-control="textbox">
+                            <label for="inpColorName">Color name</label>
+                            <input type="text" id="inpColorName" value="black">
+                        </div>              
+                    </div>
+                    <div id="divColor" class="tabcontent-right">
+                        <h4 id="h4ColorName">black</h4>
+                        <h4 id="h4HexValue" class="hex-value">#000000</h4>
+                    </div>
+            </fieldset>
+
+            <!-- MESSAGEBOX -->
+            <fieldset id="fldMessagebox" class="tabcontent">
+                <div class="tabcontent-left">
+                    <h4>The messagebox class serves to display information and allows interacting with the user.</h4>
+                    <p>The class uses the Color class for its gradient display.</p>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkPrompt" data-code="msgbox" data-buddy="txtPrompt">
+                        <label for="chkPrompt">Prompt</label>
+                        <input type="text" id="txtPrompt" data-code="msgbox" placeholder="Message displayed to user" disabled>
+                    </div>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkTitle" data-code="msgbox" data-buddy="txtTitle">
+                        <label for="chkTitle">Title</label>
+                        <input type="text" id="txtTitle" data-code="msgbox" placeholder="Caption of the messagebox (default: page title)" disabled>
+                    </div>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkButtons" data-code="msgbox" data-buddy="txtButtons">
+                        <label for="chkButtons">Buttons</label>
+                        <input type="text" id="txtButtons" data-code="msgbox" placeholder="Shown buttons, separated by comma (default: Ok)" disabled>
+                    </div>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkModal" data-code="msgbox" checked>
+                        <label for="chkModal">Modal</label>
+                    </div>
+                    <div data-control="checkbox">
+                        <input type="checkbox" id="chkGradient" data-code="msgbox" checked data-buddy="colGradientFrom, colGradientTo">
+                        <label for="chkGradient">Gradient</label>
+                        from <input type="color" id="colGradientFrom" data-code="msgbox"  value="#000080">
+                          to <input type="color" id="colGradientTo" data-code="msgbox"  value="#ffffff">
+                    </div>
+                    <button type="button" id="btnMessagebox" class="btn-run-demo">Show messagebox</button>
+                </div>
+                <div class="tabcontent-right"> 
+                    <h4>The current call would look like this:</h4>
+                    <pre class="code"><code id="codeMsgBox"></code></pre>
+                    <h4>The style of the messagebox can be changed by assigning different style sheets.</h4>
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpDefault" data-code="msgbox" name="msgstyle" value="./style/msgbox.css" checked>
+                        <label for="inpDefault">default</label>
+                    </div>
+                    <div data-control="radiobox">
+                        <input type="radio" id="inpEdged" data-code="msgbox" name="msgstyle" value="./style/msgbox_edged.css">
+                        <label for="inpEdged">green edged</label>
+                    </div>
+                    <h2 id="msgAnswer"></h2>
+                </div>
+            </fieldset>
+
+            <!-- TIMER -->
+            <fieldset id="fldTimer" class="tabcontent">
+                <div class="tabcontent-left">
                     <div data-control="checkbox">
                         <input type="checkbox" id="chkShowClock">
                         <label for="chkShowClock">Show clock</label>
@@ -80,70 +212,79 @@
                     <div data-control="checkbox" id="ctlAlert">
                         <input type="checkbox" id="chkAlert" checked>
                         <label for="chkAlert">Message, wenn Alarmzeit erreicht ist</label>
-                    </div>                 
-                </fieldset>
+                    </div>
+                </div>
 
-                <fieldset><legend> Calculator Demo </legend>
+                <div id="divClockFrame" class="tabcontent-right clock-frame">
+                    <div id="divClock"></div>
+                    <p id="pInfo">0:00</p>
+                    <button id="btnStartTimer"  class="btn-run-demo" disabled>Start Timer-Demo...</button>
+                </div> 
+            </fieldset>
+
+            <!-- CALCULATOR -->
+            <fieldset id="fldCalculator" class="tabcontent">
+                <div class="tabcontent-left">
+                    <h4>Chose the calculator style and click one of the icons below.</h4>
+                    <p>If the calculator has a corresponding input control, you can close it only by pressing the enter or escape key. If the calculater is running in fullscreen mode you can close it by click on the outside area of the calculator.</p>
                     <div data-control="radiobox">
                         <input type="radio" id="radCalcApple" name="calcstyle" value="./style/calculator_apple.css">
-                        <!-- <input type="radio" id="radCalcApple" name="calcstyle" value="./style/calculator.css"> -->
                         <label for="radCalcApple">Apple style</label>
                     </div>                    
                     <div data-control="radiobox">
                         <input type="radio" id="radCalcWhite" name="calcstyle" value="./style/calculator_wht.css">
-                        <label for="radCalcWhite">neumorphic light</label>
+                        <label for="radCalcWhite">Light theme (neumorphic)</label>
                     </div>
                     <div data-control="radiobox">
                         <input type="radio" id="radCalcBlack" name="calcstyle" value="./style/calculator_blk.css" checked>
-                        <label for="radCalcBlack">neumorphic dark</label>
+                        <label for="radCalcBlack">Dark theme (neumorphic)</label>
                     </div>
 
-                    <div data-control class="spc-btw">
+                    <div data-control>
                         <div data-control="numbox">
-                            <label for="inpCalcResult">Buddy</label>
+                            <label for="inpCalcResult">Calculate result </label>
                             <input type="text" id="inpCalcResult">
                             <img id="imgCalcPopup" src="./img/calculator512.png">
                         </div>
-                        <div data-control="numbox">
-                            <label>Fullscreen</label>
+                        <div data-control="numbox" style="margin-left: 2rem;">
+                            <label>Fullscreen mode </label>
                             <img id="imgCalcFullscreen" src="./img/calculator512.png">
                         </div>
                     </div>
-                </fieldset>              
-            </form>
+                </div>
+            </fieldset> 
 
-            <!-- <jom-control type="number">Caption for Control: 
-                <input type="number">
-            </jom-control> -->
-    
-            <jom-control id="jomText" type="number" caption="Anzahl: " unit="Stck"></jom-control>
-        </aside>
-        
+            <fieldset id="fldControl" class="tabcontent" style="display: grid;">
+                <div class="tabcontent-left">
+                    <jom-control>Name</jom-control>
+                    <jom-control>Vorname</jom-control>
+                    <jom-control type="date">Geburtsdatum</jom-control>
+                    <jom-control type="counter" min="140" max ="200" value="180" unit="cm">Grösse</jom-control>
+                    <jom-control type="range" min="140" max ="200" value="180" unit="value: cm">Grösse</jom-control>
+                    <jom-control type="checkbox" switch="number,counter" captionwidth="6.5rem" unit="kg">Check me</jom-control>
+                    <jom-control type="radio" 
+                                 options="Frühling,
+                                          Sommer, 
+                                          Herbst, 
+                                          Winter"
+                                 selected="3" name="season">Wähle...
+                    </jom-control>
+                    <jom-control options="-- bitte wählen --,
+                                         Frühling, 
+                                         Sommer, 
+                                         Herbst, 
+                                         Winter" type="dropdown" selected="3">Wähle ein Genre
+                    </jom-control>
 
+                    <jom-control id="jomCountries" type="combobox"  options="Urugay, Germany, United Kingdom, France, Italy, Greece, United States, Uganda,Portugal, Poland, Pakistan, Peru" size="6" >New Combobox</jom-control>
 
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="800" baseProfile="full" viewBox="-21 -21 42 42">
-            <defs>
-                <radialGradient id="b" cx=".2" cy=".2" r=".5" fx=".2" fy=".2">
-                    <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
-                    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-                </radialGradient>
-                <radialGradient id="a" cx=".5" cy=".5" r=".5">
-                    <stop offset="0" stop-color="#ff0"/>
-                    <stop offset=".75" stop-color="#ff0"/>
-                    <stop offset=".95" stop-color="#ee0"/>
-                    <stop offset="1" stop-color="#e8e800"/>
-                </radialGradient>
-            </defs>
-            <circle r="20" fill="url(#a)" stroke="#000" stroke-width=".15"/>
-            <circle r="20" fill="url(#b)"/>
-            <g id="c">
-                <ellipse cx="-6" cy="-7" rx="2.5" ry="4"/>
-                <path fill="none" stroke="#000" stroke-linecap="round" stroke-width=".5" d="M10.6 2.7a4 4 0 0 0 4 3"/>
-            </g>
-            <use xlink:href="#c" transform="scale(-1 1)"/>
-            <path fill="none" stroke="#000" stroke-width=".75" d="M-12 5a13.5 13.5 0 0 0 24 0 13 13 0 0 1-24 0"/>
-        </svg>     -->
+                    <jom-combo size="6" options="Urugay, Germany, United Kingdom, France, Italy, Greece, United States, Uganda,Portugal, Poland, Pakistan, Peru" value="Netherlands"></jom-combo>
+
+                    <jom-radio></jom-radio>
+                    
+                </div>
+            </fieldset>
+        </form>
     </main>
-
 </body>
 </html>

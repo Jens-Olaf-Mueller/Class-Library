@@ -1,5 +1,6 @@
 const CTX_RESET = '#00000000';
 
+// https://colorcodes.io/
 // https://gist.github.com/krabs-github/ec56e4f1c12cddf86ae9c551aa9d9e04
 // https://chir.ag/projects/ntc/ntc.js
 // https://github.com/bahamas10/css-color-names/blob/master/css-color-names.json
@@ -124,7 +125,7 @@ class Color {
     }
 }
 
-// export default Color;
+export default Color;
 
 const CSS_COLORS = [
     {name: 'aliceblue', hex: 'f0f8ff'}, 

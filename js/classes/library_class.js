@@ -4,6 +4,16 @@ class Library {
     #cssSheet = null;
     #parentElement = null;
     #visible = true;
+    #styleSheetChanged = false;
+
+
+    /**
+     * Flag that indicates whether a new stylesheet was assigned or not.
+     */
+    get styleSheetChanged() { return this.#styleSheetChanged; }
+    set styleSheetChanged(flag) {
+        if (typeof flag == 'boolean') this.#styleSheetChanged = flag;
+    }
 
     /**
      * Assigns a stylesheet from the passed path or returns it.
@@ -11,7 +21,16 @@ class Library {
      */
     get stylesheet() { return this.#cssSheet; }
     set stylesheet(href) {
-        if (href == null) return;        
+        if (href == null) return;      
+        // avoid duplicates!
+        if (this.#cssSheet) {
+            const sheetName = this.#cssSheet.replace(/^.*[\\\/]/, ''),
+                  oldSheet = document.querySelector(`link[href*="${sheetName}"]`),
+                  defaultSheet = document.querySelector(`link[href*="msgbox"]`);
+                //   debugger
+            if (oldSheet) oldSheet.remove();
+            if (defaultSheet) defaultSheet.remove();
+        }
         const filename = href.replace(/^.*[\\\/]/, ''); // avoid duplicates!
         for (let i = 0; i < document.styleSheets.length; i++) {
             // console.log('Sheet '+ Number(i+1), document.styleSheets[i])
@@ -26,6 +45,7 @@ class Library {
             href: href
         });
         document.head.appendChild(link);
+        this.styleSheetChanged = true;
     }
 
 

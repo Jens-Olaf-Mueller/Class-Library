@@ -1,18 +1,22 @@
 import { $ } from './library.js';
+import { initContainer } from './demo_container.js';
+import { initColor } from './demo_color.js';
+import { initMessagebox } from './demo_messagebox.js';
 import MessageBox from './classes/messagebox_class.js';
 import Timer from './classes/timer_class.js';
 import Container from './classes/container_class.js';
 import IntervalCollection from './classes/intervals_class.js';
 import Calculator from './classes/calculator_class.js';
 
-const msgBox = new MessageBox('../msgbox.css'),
-      tmrDemo = new Timer(12,0,0,'divClock'),
+const msgBox = new MessageBox('../msgbox.css');
+const tmrDemo = new Timer(12,0,0,'divClock'),
       divClock = new Container('divClockFrame'),
       collIntervals = new IntervalCollection('Test'),
       calc = new Calculator();
       
 
-const chkAlert = $('chkAlert'),
+const tabs = $('button.btnTab'),
+      chkAlert = $('chkAlert'),
       chkShowClock = $('chkShowClock'),
       chkTimeout = $('chkTimeout'),
       pInfo = $('pInfo'),
@@ -24,9 +28,46 @@ const chkAlert = $('chkAlert'),
 runApp();
 
 function runApp() {
-    Array.from($('rgb')).forEach((rgb) => {
-        rgb.addEventListener('input', () => displayColor());
+    // install logic for tabstrip
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', (event) => switchTab(event));
     });
+    initContainer();     
+    initColor();         
+    initMessagebox();    
+    // initTimer();      
+    
+    // $('jomCombo').options = [{caption: 'Frühling', value: 1},{caption: 'Sommer', value: 2},{caption: 'Herbts', value: 3},{caption: 'Winter', value: 4}];
+// debugger
+    // $('jomRadios').options ='Januar,Februar,März, April:3,Mai,Juni:5';
+
+    // $('jomCombo').selected = 2;
+    // $('jomRadios').selected = 1;
+
+    const jom = document.createElement('jom-control');
+    // $('#fldControl .tabcontent-left').appendChild(jom);
+    jom.captionText = "Neues Element";
+    jom.type ="counter";
+    jom.min=-5;
+    jom.max = 150;
+    jom.value = 100;
+    jom.unit = 'value: kg';
+    jom.captionwidth = '12rem';
+
+// debugger
+
+$('jomCountries').addEventListener('click', function() {
+    console.log(this.value)
+})
+
+    const combo = document.createElement('jom-combo');
+    combo.options = 'A,B,C,D,E,F,G,H'
+    combo.size = 4
+    combo.addEventListener('click', function() {
+        console.log(this.value)
+    })
+    // document.body.appendChild(combo)
+
     chkShowClock.addEventListener('change', toggleClock);
     btnRunTimer.addEventListener('click', startDemo);    
     document.addEventListener('timerexpired', timeOutAlert);   
@@ -37,8 +78,8 @@ function runApp() {
     tmrDemo.sound = './sound/tick tack.mp3';
     tmrDemo.soundPlayTime = 3;
     tmrDemo.soundEnabled = true;
-    divClock.hide();
-    divClock.addEventListener('click', clockClicked);
+    // divClock.hide();
+    // divClock.addEventListener('click', clockClicked);
     // console.log(divClock.events)
     // collIntervals.add(intervalDemo, 5000, 'intervalDemo');
     // collIntervals.add(intervalDemo, 5000, tmrDemo);
@@ -53,30 +94,30 @@ function runApp() {
 
     // $('jomText').setAttribute('disabled','disabled');
     // $('jomText').removeAttribute('disabled');
-    const clr = new Color();
-    // console.log(clr.getName(clr.parseColor('#0000ff')))
-    // clr.parseColor(0,0,255);
-    console.log(clr.toRGBA$(clr.parseColor('255,255,0')));
-    // clr.parseColor('green');
+
+
+    // $('jomText').type = 'counter';
+    // $('jomText').value = 22.50;
+    // debugger
+    // const names = document.querySelectorAll('jom-control[name="season"]')[1].checked = true;        
     
 }
 
-function displayColor() {
-    const rgb = Array.from($('rgb')).map(item => {return item.value});
-    const colorName = $('h4ColorName'),
-          inpColorName = $('inpColorName'),
-          clsColor = new Color();         
-    const currCol = ($('inpHex').checked) ? '#'+rgb[0]+rgb[1]+rgb[2] : rgb;
-
-    
-    colorName.textContent = clsColor.getName(currCol);
-    $('h4HexValue').innerText = clsColor.toHex(currCol);
-    inpColorName.value = clsColor.getName(currCol) || '';
-    
-           
-    
-
+function switchTab(event) {
+    const caption = event.target.innerText.split(' ')[0],
+          tabcontent = $('.tabcontent');
+    for (let i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = 'none';
+    }
+    for (let i = 0; i < tabs.length; i++) {
+      tabs[i].className = tabs[i].className.replace(' active', '');
+    }
+    $(`fld${caption}`).style.display = 'grid';
+    event.currentTarget.className += ' active';
 }
+
+
+
 
 function showCalculator(event) {
     // get the chosen stylesheet
@@ -84,11 +125,19 @@ function showCalculator(event) {
     calc.stylesheet = style;
     if (event.target.id == 'imgCalcFullscreen') {        
         calc.show();
+        // for (let i = 0; i < 4; i++) {
+        //     $('divCalculator').innerHTML += `<h2 class="watermark">Click here to close</h2>`;
+        // }
+        // const watermarks = $('.watermark');
+        // watermarks[0].style.cssText += 'top: 4rem; left: 4rem;';
+        // watermarks[1].style.cssText += 'top: 4rem; right: 4rem;';
+        // watermarks[2].style.cssText += 'bottom: 4rem; left: 4rem;';
+        // watermarks[3].style.cssText += 'bottom: 4rem; right: 4rem;';
     } else {
         calc.show('inpCalcResult');
-    }
-    
+    }    
 }
+
 
 function resetStylesheets() {
     const sheets = $('link[rel="stylesheet"][href*="calculator"]');
@@ -113,7 +162,8 @@ function toggleClock() {
     }
 }
 
-async function startDemo() {
+async function startDemo(event) {
+    event.preventDefault();
     let answer = await msgBox.show('Welcher Timer soll gestartet werden?', '',
                 'Aktuelle Uhrzeit, 00:00 Uhr, Countdown 10s, Alarm in 10s, Abbrechen');
     if (answer == 'Abbrechen') return;

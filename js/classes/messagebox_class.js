@@ -20,14 +20,29 @@ class MessageBox extends Library{
         }
     }
     modal = true;       // box is per default ALWAYS modal!
-    gradient = true;
-    #gradientFrom ='000A6D';
+    #gradient = true;
+    get gradient() { return this.#gradient; }
+    set gradient(newGradient) {
+        if (typeof newGradient == 'boolean') {
+            this.#gradient = newGradient;
+        } else if (typeof newGradient == 'object') {
+            this.#gradient = (newGradient.hasOwnProperty('from') && newGradient.hasOwnProperty('to'));
+            if (this.#gradient) {
+                this.gradientColorFrom = newGradient.from;
+                this.gradientColorTo = newGradient.to;
+            }
+        }
+    }
+
+    #gradientFrom = null;
+    // #gradientFrom ='#000A6D';
     get gradientColorFrom() { return this.#gradientFrom; } 
     set gradientColorFrom(value) { 
         this.#gradientFrom = value;
         this.#setCSSVar('msg-gradient-color-from', value);
     }
-    #gradientTo = 'whitesmoke';
+    #gradientTo = null;
+    // #gradientTo = 'whitesmoke';
     get gradientColorTo() { return this.#gradientTo; }
     set gradientColorTo(value) {
         this.#gradientTo = value;
@@ -92,6 +107,7 @@ class MessageBox extends Library{
      */
     constructor(styleSheet) {
         super(styleSheet);
+        this.styleSheetChanged = false;
     }
 
     /**
@@ -136,7 +152,17 @@ class MessageBox extends Library{
      */
     #renderBox() {
         // titlebar with gradient ?
-        let dlgClass = this.gradient ? 'msg-titlebar msg-gradient' : 'msg-titlebar';
+        let dlgClass = 'msg-titlebar';
+        if (this.gradient) {
+            // if (this.styleSheetChanged) {
+            //     const root = document.documentElement;
+            //     root.style.removeProperty('--msg-gradient-color-from');
+            //     root.style.removeProperty('--msg-gradient-color-to');
+            //     this.gradientColorFrom = getComputedStyle(root).getPropertyValue('--msg-gradient-color-from');
+            //     this.gradientColorTo = getComputedStyle(root).getPropertyValue('--msg-gradient-color-to');
+            // }
+            dlgClass += ' msg-gradient'
+        }
         // set a white caption when gradient exists!
         let captionStyle = this.gradient ? `style="color: whitesmoke !important"` : '';
         document.getElementById(OVERLAY_ID).innerHTML = `
@@ -174,7 +200,13 @@ class MessageBox extends Library{
         this.title = title;
         this.buttons = buttons;
         this.modal = (modal == null) ? true : modal;
-        if (typeof gradient == 'boolean') this.gradient = gradient;
+        this.gradient = gradient;
+        // if (typeof gradient == 'boolean') {
+        //     this.gradient = gradient;
+        // } else if (typeof gradient == 'object') {
+        //     if (gradient.hasOwnProperty('from')) this.gradientColorFrom = gradient.from;
+        //     if (gradient.hasOwnProperty('to')) this.gradientColorTo = gradient.from;
+        // }        
     }
 
 
